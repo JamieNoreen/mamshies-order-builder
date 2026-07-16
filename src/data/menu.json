@@ -1,0 +1,741 @@
+{
+  "VEGGIES": [
+    {
+      "item": "CHOPSUEY SPECIAL",
+      "prices": {
+        "S": "700",
+        "M": "1000",
+        "L": "1200",
+        "XL": "1500"
+      }
+    },
+    {
+      "item": "HOTOTAY",
+      "prices": {
+        "S": "750",
+        "M": "950",
+        "L": "1150",
+        "XL": "1450"
+      }
+    },
+    {
+      "item": "LUMPIANG UBOD",
+      "prices": {
+        "S": "650 (20)",
+        "M": "850 (30)",
+        "L": "1050 (40)",
+        "XL": "1200 (50)"
+      }
+    },
+    {
+      "item": "7 KINDS",
+      "prices": {
+        "S": "700",
+        "M": "1000",
+        "L": "1200"
+      }
+    },
+    {
+      "item": "LAING",
+      "prices": {
+        "S": "700",
+        "M": "900",
+        "L": "1150",
+        "XL": "1250"
+      }
+    },
+    {
+      "item": "AMPALAYA con (BEEF) KARNE",
+      "prices": {
+        "S": "800",
+        "M": "1000",
+        "L": "1200",
+        "XL": "1400"
+      }
+    },
+    {
+      "item": "BAGNET PINAKBET",
+      "prices": {
+        "S": "850",
+        "M": "1000",
+        "L": "1150",
+        "XL": "1250"
+      }
+    },
+    {
+      "item": "TALONG w/ BAGOONG w/ BAGNET PORK",
+      "prices": {
+        "S": "750",
+        "M": "950",
+        "L": "1150",
+        "XL": "1250"
+      }
+    }
+  ],
+  "SALAD": [
+    {
+      "item": "POTATO SALAD",
+      "prices": {
+        "S": "750",
+        "M": "950",
+        "L": "1100",
+        "XL": "1300"
+      }
+    },
+    {
+      "item": "ENSALADANG TALONG",
+      "prices": {
+        "S": "600",
+        "M": "800",
+        "L": "1000",
+        "XL": "1100"
+      }
+    },
+    {
+      "item": "GARDEN SALAD",
+      "prices": {
+        "S": "750",
+        "M": "950",
+        "L": "1100",
+        "XL": "1300"
+      }
+    },
+    {
+      "item": "CUCUMBER EGG SALAD",
+      "prices": {
+        "S": "750",
+        "M": "950",
+        "L": "1100",
+        "XL": "1300"
+      }
+    },
+    {
+      "item": "KANI CRAB SALAD",
+      "prices": {
+        "S": "750",
+        "M": "900",
+        "L": "1050",
+        "XL": "1150"
+      }
+    }
+  ],
+  "CHICKEN": [
+    {
+      "item": "CORDON BLEU",
+      "prices": {
+        "S": "700",
+        "M": "1100",
+        "L": "1300",
+        "XL": "1600",
+        "XXL": "2000"
+      }
+    },
+    {
+      "item": "FLAVORED WINGS",
+      "prices": {
+        "S": "800",
+        "M": "1200",
+        "L": "1400",
+        "XL": "1600",
+        "XXL": "1900"
+      }
+    },
+    {
+      "item": "KOREAN CHICKEN",
+      "prices": {
+        "S": "750",
+        "M": "1000",
+        "L": "1200",
+        "XL": "1600",
+        "XXL": "1900"
+      }
+    },
+    {
+      "item": "CHICKEN AFRITADA",
+      "prices": {
+        "S": "750",
+        "M": "950",
+        "L": "1100",
+        "XL": "1500",
+        "XXL": "1800"
+      }
+    },
+    {
+      "item": "CHICKEN PASTEL",
+      "prices": {
+        "S": "800",
+        "M": "950",
+        "L": "1300",
+        "XL": "1600",
+        "XXL": "2000"
+      }
+    },
+    {
+      "item": "CHICKEN CURRY",
+      "prices": {
+        "S": "800",
+        "M": "950",
+        "L": "1050",
+        "XL": "1500",
+        "XXL": "1800"
+      }
+    },
+    {
+      "item": "CALDERETANG MANOK",
+      "prices": {
+        "S": "800",
+        "M": "1000",
+        "L": "1300",
+        "XL": "1600",
+        "XXL": "2000"
+      }
+    },
+    {
+      "item": "CHICKEN in BBQ SAUCE",
+      "prices": {
+        "S": "800",
+        "M": "900",
+        "L": "1000",
+        "XL": "1300",
+        "XXL": "1700"
+      }
+    },
+    {
+      "item": "CHICKEN ADOBO",
+      "prices": {
+        "S": "800",
+        "M": "900",
+        "L": "1000",
+        "XL": "1300",
+        "XXL": "1700"
+      }
+    },
+    {
+      "item": "FRIED CHICKEN",
+      "prices": {
+        "S": "900 (30 pcs)",
+        "M": "1000 (40 pcs)",
+        "L": "1300 (60 pcs)",
+        "XL": "1600 (75 pcs)",
+        "XXL": "1900 (90 pcs)"
+      }
+    },
+    {
+      "item": "CHICKEN INASAL ASSTD PARTS",
+      "prices": {
+        "S": "950",
+        "M": "1100",
+        "L": "1300",
+        "XL": "1600",
+        "XXL": "1900"
+      }
+    },
+    {
+      "item": "CHICKEN FILLET",
+      "prices": {
+        "S": "950",
+        "M": "1100",
+        "L": "1300",
+        "XL": "1600",
+        "XXL": "1900"
+      }
+    },
+    {
+      "item": "PININYAHANG MANOK",
+      "prices": {
+        "S": "900",
+        "M": "1100",
+        "L": "1300",
+        "XL": "1500",
+        "XXL": "1800"
+      }
+    },
+    {
+      "item": "ATAY BALUNAN ASADO",
+      "prices": {
+        "S": "900",
+        "M": "1000",
+        "L": "1200",
+        "XL": "1500",
+        "XXL": "1800"
+      }
+    },
+    {
+      "item": "CHICKEN SATE BREAST PART",
+      "prices": {
+        "S": "1000 (30 pcs)",
+        "M": "1200 (40 pcs)",
+        "L": "1400 (50 pcs)",
+        "XL": "1600 (60 pcs)",
+        "XXL": "1900 (70 pcs)"
+      }
+    },
+    {
+      "item": "CHICKEN TERIYAKI",
+      "prices": {
+        "S": "900",
+        "M": "1100",
+        "L": "1400",
+        "XL": "1700",
+        "XXL": "2000"
+      }
+    }
+  ],
+  "PORK": [
+    {
+      "item": "PORK SHANGHAI",
+      "prices": {
+        "S": "400",
+        "M": "700",
+        "L": "1000",
+        "XL": "1300",
+        "XXL": "1500"
+      }
+    },
+    {
+      "item": "PORK BELLY in BLUEBERRY SAUCE",
+      "prices": {
+        "S": "1000",
+        "M": "1300",
+        "L": "1200",
+        "XL": "1400",
+        "XXL": "1700"
+      }
+    },
+    {
+      "item": "PORK PICADILLO",
+      "prices": {
+        "S": "900",
+        "M": "1200",
+        "L": "1600",
+        "XL": "1900",
+        "XXL": "2300"
+      }
+    },
+    {
+      "item": "PORK HAMONADO",
+      "prices": {
+        "S": "1100",
+        "M": "1400",
+        "L": "1700",
+        "XL": "2000",
+        "XXL": "2600"
+      }
+    },
+    {
+      "item": "MENUDO",
+      "prices": {
+        "S": "1100",
+        "M": "1300",
+        "L": "1600",
+        "XL": "1900",
+        "XXL": "2200"
+      }
+    },
+    {
+      "item": "BICOL EXPRESS",
+      "prices": {
+        "S": "1100",
+        "M": "1300",
+        "L": "1500",
+        "XL": "1800",
+        "XXL": "2100"
+      }
+    },
+    {
+      "item": "SWEET & SOUR",
+      "prices": {
+        "S": "1200",
+        "M": "1500",
+        "L": "1800",
+        "XL": "2000",
+        "XXL": "2300"
+      }
+    },
+    {
+      "item": "TONKATSU",
+      "prices": {
+        "S": "1200",
+        "M": "1400",
+        "L": "1700",
+        "XL": "2000",
+        "XXL": "2300"
+      }
+    },
+    {
+      "item": "LECHON KAWALI",
+      "prices": {
+        "S": "1300",
+        "M": "1500",
+        "L": "1800",
+        "XL": "2000",
+        "XXL": "2300"
+      }
+    },
+    {
+      "item": "PORK SISIG",
+      "prices": {
+        "S": "1300",
+        "M": "1500",
+        "L": "1800",
+        "XL": "2100",
+        "XXL": "2400"
+      }
+    },
+    {
+      "item": "BOPIS SPECIAL",
+      "prices": {
+        "S": "1200",
+        "M": "1500",
+        "L": "1800",
+        "XL": "2000",
+        "XXL": "2200"
+      }
+    },
+    {
+      "item": "PORK and TOFU",
+      "prices": {
+        "S": "1100",
+        "M": "1300",
+        "L": "1500",
+        "XL": "1700",
+        "XXL": "1900"
+      }
+    },
+    {
+      "item": "PORK REBOSADO",
+      "prices": {
+        "S": "1200",
+        "M": "1500",
+        "L": "1700",
+        "XL": "1900",
+        "XXL": "2100"
+      }
+    },
+    {
+      "item": "LECHON PAKSIW",
+      "prices": {
+        "S": "1300",
+        "M": "1600",
+        "L": "1800",
+        "XL": "2100",
+        "XXL": "2300"
+      }
+    },
+    {
+      "item": "PORK SALPICAO",
+      "prices": {
+        "S": "1200",
+        "M": "1500",
+        "L": "1700",
+        "XL": "2100",
+        "XXL": "2300"
+      }
+    },
+    {
+      "item": "CALDERETA",
+      "prices": {
+        "S": "1300",
+        "M": "1500",
+        "L": "1800",
+        "XL": "2100",
+        "XXL": "2300"
+      }
+    },
+    {
+      "item": "CRISPY KARE KARE",
+      "prices": {
+        "S": "1300",
+        "M": "1500",
+        "L": "1850",
+        "XL": "2100",
+        "XXL": "2400"
+      }
+    },
+    {
+      "item": "KULAO",
+      "prices": {
+        "S": "1100",
+        "M": "1300",
+        "L": "1500",
+        "XL": "1800",
+        "XXL": "2100"
+      }
+    },
+    {
+      "item": "PORK HUMBA",
+      "prices": {
+        "S": "1200",
+        "M": "1400",
+        "L": "1600",
+        "XL": "1800",
+        "XXL": "2100"
+      }
+    },
+    {
+      "item": "PORK BARBEQUE",
+      "prices": {
+        "S": "900 (25 pcs)",
+        "M": "1100 (35 pcs)",
+        "L": "1300 (45 pcs)",
+        "XL": "1600 (55 pcs)"
+      }
+    }
+  ],
+  "PASTA": [
+    {
+      "item": "BIHON",
+      "prices": {
+        "S": "650",
+        "M": "700",
+        "L": "800",
+        "XL": "1000"
+      }
+    },
+    {
+      "item": "CANTON",
+      "prices": {
+        "S": "650",
+        "M": "750",
+        "L": "850",
+        "XL": "1050"
+      }
+    },
+    {
+      "item": "SOTANGHON",
+      "prices": {
+        "S": "850",
+        "M": "950",
+        "L": "1100",
+        "XL": "1300"
+      }
+    },
+    {
+      "item": "MIKI BIHON",
+      "prices": {
+        "S": "750",
+        "M": "850",
+        "L": "950",
+        "XL": "1100"
+      }
+    },
+    {
+      "item": "BIHON / CANTON",
+      "prices": {
+        "S": "750",
+        "M": "850",
+        "L": "950",
+        "XL": "1100"
+      }
+    },
+    {
+      "item": "MALABON",
+      "prices": {
+        "S": "650",
+        "M": "750",
+        "L": "850",
+        "XL": "1000"
+      }
+    },
+    {
+      "item": "SPAGHETTI W/ MEATBALLS",
+      "prices": {
+        "S": "700",
+        "M": "800",
+        "L": "900",
+        "XL": "1100"
+      }
+    },
+    {
+      "item": "CARBONARA",
+      "prices": {
+        "S": "700",
+        "M": "800",
+        "L": "900",
+        "XL": "1100"
+      }
+    },
+    {
+      "item": "ALFREDO",
+      "prices": {
+        "S": "650",
+        "M": "750",
+        "L": "850",
+        "XL": "1100"
+      }
+    },
+    {
+      "item": "BAKED MAC",
+      "prices": {
+        "S": "850",
+        "M": "950",
+        "L": "1100",
+        "XL": "1300"
+      }
+    },
+    {
+      "item": "LASAGNA",
+      "prices": {
+        "S": "850",
+        "M": "950",
+        "L": "1100",
+        "XL": "1300"
+      }
+    },
+    {
+      "item": "PASTA BOLOGNESE",
+      "prices": {
+        "S": "700",
+        "M": "800",
+        "L": "900",
+        "XL": "1000"
+      }
+    },
+    {
+      "item": "TUNA PASTA",
+      "prices": {
+        "S": "800",
+        "M": "900",
+        "L": "1000",
+        "XL": "1200"
+      }
+    }
+  ],
+  "BEEF": [
+    {
+      "item": "BEEF STROGANOFF",
+      "prices": {
+        "S": "1300",
+        "M": "2000",
+        "L": "2500",
+        "XL": "3000"
+      }
+    },
+    {
+      "item": "MORCON",
+      "prices": {
+        "S": "1500",
+        "M": "2500",
+        "L": "3000",
+        "XL": "3500"
+      }
+    },
+    {
+      "item": "TAPA",
+      "prices": {
+        "S": "1100",
+        "M": "1500",
+        "L": "2200",
+        "XL": "2700"
+      }
+    },
+    {
+      "item": "BEEF w/ BROCCOLI",
+      "prices": {
+        "S": "1300",
+        "M": "1700",
+        "L": "2100",
+        "XL": "2500"
+      }
+    },
+    {
+      "item": "CALDERETA",
+      "prices": {
+        "S": "1400",
+        "M": "1900",
+        "L": "2400",
+        "XL": "2900"
+      }
+    },
+    {
+      "item": "KARE KARE",
+      "prices": {
+        "S": "1400",
+        "M": "1900",
+        "L": "2400",
+        "XL": "2900"
+      }
+    },
+    {
+      "item": "ROAST BEEF",
+      "prices": {
+        "S": "1400",
+        "M": "1900",
+        "L": "2400",
+        "XL": "2900"
+      }
+    },
+    {
+      "item": "BEEF STEAK",
+      "prices": {
+        "S": "1200",
+        "M": "1700",
+        "L": "2100",
+        "XL": "2600"
+      }
+    },
+    {
+      "item": "BURGER STEAK",
+      "prices": {
+        "S": "1300",
+        "M": "1700",
+        "L": "2100",
+        "XL": "2500"
+      }
+    }
+  ],
+  "SEAFOOD": [
+    {
+      "item": "SEAFOOD BOIL in CAJUN SAUCE",
+      "prices": {
+        "S": "1100",
+        "M": "1500",
+        "L": "1800",
+        "XL": "2000"
+      }
+    },
+    {
+      "item": "SHRIMP in GARLIC AND BUTTER",
+      "prices": {
+        "S": "1200",
+        "M": "1500",
+        "L": "1800",
+        "XL": "2000"
+      }
+    },
+    {
+      "item": "STUFFED SQUID (GRILL)",
+      "prices": {
+        "S": "1200",
+        "M": "1400",
+        "L": "1700",
+        "XL": "1900"
+      }
+    },
+    {
+      "item": "FISH AND CHIPS",
+      "prices": {
+        "S": "900",
+        "M": "1100",
+        "L": "1300",
+        "XL": "1500"
+      }
+    },
+    {
+      "item": "STEAMED POMPANO",
+      "prices": {
+        "S": "1100 (2 pcs)",
+        "M": "1500 (3 pcs)",
+        "L": "1900 (4 pcs)"
+      }
+    },
+    {
+      "item": "TUNA KILAWIN",
+      "prices": {
+        "S": "1000",
+        "M": "1200",
+        "L": "1400"
+      }
+    }
+  ]
+}
