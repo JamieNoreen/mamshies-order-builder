@@ -24,7 +24,7 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Logo & Brand */}
       <div className="flex items-center gap-2.5 min-w-0 select-none">
         <img
-          src="/Mamshies logo.png"
+          src="/Mamshies logo.webp"
           alt="Mamshies Logo"
           className="w-10 h-10 object-contain flex-shrink-0"
         />

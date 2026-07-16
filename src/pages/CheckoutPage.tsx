@@ -445,7 +445,7 @@ export const CheckoutPage: React.FC = () => {
           {/* Compact Brand Section */}
           <div className="flex items-center gap-3 select-none">
             <img
-              src="/Mamshies logo.png"
+              src="/Mamshies logo.webp"
               alt="Mamshies Logo"
               className="h-11 w-auto object-contain flex-shrink-0"
             />

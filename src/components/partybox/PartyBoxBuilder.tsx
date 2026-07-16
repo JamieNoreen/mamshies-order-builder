@@ -193,7 +193,7 @@ export const PartyBoxBuilder: React.FC<PartyBoxBuilderProps> = ({ dishes, classN
                 "p-5 rounded-2xl flex flex-col relative transition-all duration-300 border w-full max-w-[560px] mx-auto overflow-visible",
                 isCompleted 
                   ? "bg-[#FAF7F2] border-primary/20 shadow-md h-[400px] justify-between" 
-                  : "bg-background/80 border-secondary/15 shadow-xs hover:border-primary/15 hover:shadow-sm h-auto pb-6 justify-start gap-4",
+                  : "bg-white border-[#E8DDD6] shadow-xs hover:border-primary/15 hover:shadow-sm h-auto pb-6 justify-start gap-4",
                 openDropdownIdx === idx ? "z-40" : "z-10"
               )}
             >

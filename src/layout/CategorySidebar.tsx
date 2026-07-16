@@ -36,7 +36,7 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
         {/* Compact Brand Section */}
         <div className="flex items-center gap-3 px-2 mb-6 select-none">
           <img
-            src="/Mamshies logo.png"
+            src="/Mamshies logo.webp"
             alt="Mamshies Logo"
             className="h-11 w-auto object-contain flex-shrink-0"
           />

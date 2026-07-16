@@ -125,7 +125,7 @@ export const GrazingTableView: React.FC = () => {
       {/* Page Header */}
       <div className="text-left select-none">
         <h3 className="font-fraunces font-bold text-xl md:text-2xl text-text-charcoal leading-none">
-          Grazing Table Setup
+          Grazing Table
         </h3>
         <p className="font-manrope text-[11px] text-secondary/55 leading-none mt-1.5">
           Select a package below to customize guest size and add it to your order.
@@ -134,8 +134,10 @@ export const GrazingTableView: React.FC = () => {
 
       {/* Package Selection Cards Grid (Apple-Style Configuration Cards) */}
       <div
-        className="grid gap-5 items-stretch"
-        style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))' }}
+        className="grid gap-6 items-start"
+        style={{
+          gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))',
+        }}
       >
         {GRAZING_PACKAGES.map((pkg) => {
           const isSelected = selectedPkgId === pkg.id;
@@ -152,25 +154,50 @@ export const GrazingTableView: React.FC = () => {
                 }
               }}
               className={cn(
-                'bg-background/80 p-5 rounded-2xl border transition-all duration-300 flex flex-col shadow-xs cursor-pointer select-none',
+                'bg-white p-5 rounded-2xl border transition-all duration-300 flex flex-col shadow-xs cursor-pointer select-none',
                 isSelected
                   ? 'border-primary ring-2 ring-primary/10 bg-primary/[0.01] cursor-default'
-                  : 'border-secondary/10 hover:border-primary/20 hover:shadow-sm active:scale-[0.99]'
+                  : 'border-[#E8DDD6] hover:border-primary/20 hover:shadow-sm active:scale-[0.99]'
               )}
             >
-              {/* Contained Food Image with Card Padding */}
-              <div className="w-full h-[180px] rounded-xl overflow-hidden border border-secondary/5 relative select-none flex-shrink-0 mb-3.5">
+              {/* Fixed-size square image — immune to flex-col height constraints */}
+              <div
+                style={{
+                  width: '100%',
+                  aspectRatio: '1 / 1',
+                  position: 'relative',
+                  flexShrink: 0,
+                  backgroundColor: '#FCFAF7',
+                  borderRadius: '0.75rem',
+                  border: '1px solid rgba(0,0,0,0.04)',
+                  marginBottom: '1rem',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
                 <img
                   src={pkg.imageUrl}
                   alt={pkg.title}
-                  className="w-full h-full object-cover select-none pointer-events-none"
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'contain',
+                    flexShrink: 0,
+                  }}
+                  className="select-none pointer-events-none"
                   onError={(e) => {
                     e.currentTarget.src = '/placeholder-food.webp';
                   }}
                 />
                 {isSelected && (
-                  <span className="absolute top-2.5 right-2.5 bg-primary text-background p-0.5 rounded-full shrink-0 shadow-md">
-                    <Check className="w-3.5 h-3.5" />
+                  <span
+                    className="bg-primary text-background p-1 rounded-full shadow-md"
+                    style={{ position: 'absolute', top: 12, right: 12, zIndex: 1 }}
+                  >
+                    <Check className="w-4 h-4" />
                   </span>
                 )}
               </div>
@@ -193,7 +220,7 @@ export const GrazingTableView: React.FC = () => {
                 <div className="mt-auto pt-4 flex-shrink-0">
                   <button
                     type="button"
-                    className="w-full h-10 rounded-xl font-manrope font-bold text-xs bg-background hover:bg-surface border border-secondary/15 text-text-charcoal transition-all"
+                    className="w-full h-10 rounded-xl font-manrope font-bold text-xs bg-[#F8F5F2] hover:bg-[#F0EBE6] border border-[#E8DDD6] text-text-charcoal transition-all"
                     style={{ minHeight: '40px' }}
                   >
                     Select Package

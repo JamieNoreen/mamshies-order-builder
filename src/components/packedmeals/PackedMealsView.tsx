@@ -309,7 +309,7 @@ export const PackedMealsView: React.FC<PackedMealsViewProps> = ({ dishes = [] })
           return (
             <div
               key={pkg.id}
-              className="bg-background/80 p-6 rounded-2xl border border-secondary/10 flex flex-col gap-4.5 shadow-sm hover:shadow-md hover:border-primary/10 transition-all duration-150"
+              className="bg-white p-6 rounded-2xl border border-[#E8DDD6] flex flex-col gap-4.5 shadow-sm hover:shadow-md hover:border-primary/10 transition-all duration-150"
             >
               {/* Enclosed Food Image with Card Padding */}
               <div className="w-full h-[180px] rounded-xl overflow-hidden border border-secondary/5 relative select-none flex-shrink-0">
@@ -388,10 +388,10 @@ export const PackedMealsView: React.FC<PackedMealsViewProps> = ({ dishes = [] })
         <div
           onClick={() => setIsBuilderExpanded(true)}
           className={cn(
-            "bg-background/80 p-6 rounded-2xl border flex flex-col gap-4.5 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md",
+            "bg-white p-6 rounded-2xl border flex flex-col gap-4.5 transition-all duration-200 cursor-pointer shadow-sm hover:shadow-md",
             isBuilderExpanded
-              ? "bg-primary/5 border-primary/40 ring-1 ring-primary/20 scale-[1.01]"
-              : "border-secondary/15 hover:border-primary/30 hover:bg-surface/50 active:scale-[0.98]"
+              ? "border-primary ring-1 ring-primary/20 scale-[1.01]"
+              : "border-[#E8DDD6] hover:border-primary/30 hover:bg-surface/50 active:scale-[0.98]"
           )}
         >
           {/* Enclosed Image with Card Padding */}
@@ -441,7 +441,7 @@ export const PackedMealsView: React.FC<PackedMealsViewProps> = ({ dishes = [] })
                       'p-5 rounded-2xl border flex flex-col items-center justify-center gap-1.5 transition-all duration-150 active:scale-[0.98]',
                       bentoType === b.id
                         ? 'bg-primary border-primary text-background shadow-md'
-                        : 'bg-background border-secondary/15 text-text-charcoal hover:border-primary/30 hover:bg-surface/50'
+                        : 'bg-white border-[#E8DDD6] text-text-charcoal hover:border-primary/30 hover:bg-[#F8F5F2]'
                     )}
                   >
                     <span className="text-3xl mb-1">🍱</span>
@@ -489,7 +489,7 @@ export const PackedMealsView: React.FC<PackedMealsViewProps> = ({ dishes = [] })
 
             {/* Step 3: Choose Pasta (if pasta) */}
             {bentoType && base === 'pasta' && (
-              <div className="bg-background/80 p-6 rounded-2xl border border-secondary/10 flex flex-col gap-5 shadow-sm animate-in fade-in duration-300">
+              <div className="bg-white p-6 rounded-2xl border border-[#E8DDD6] flex flex-col gap-5 shadow-sm animate-in fade-in duration-300">
                 <h4 className="font-manrope font-semibold text-[18px] text-text-charcoal leading-none select-none">
                   Step 3: Choose Pasta
                 </h4>
@@ -545,7 +545,7 @@ export const PackedMealsView: React.FC<PackedMealsViewProps> = ({ dishes = [] })
                     return (
                       <div
                         key={idx}
-                        className="bg-background/80 p-6 rounded-2xl border border-secondary/10 flex flex-col gap-5 shadow-sm hover:border-primary/15 hover:shadow-md transition-all duration-150 relative"
+                        className="bg-white p-6 rounded-2xl border border-[#E8DDD6] flex flex-col gap-5 shadow-sm hover:border-primary/15 hover:shadow-md transition-all duration-150 relative"
                       >
                         <h4 className="font-manrope font-semibold text-[18px] text-text-charcoal leading-none select-none">
                           Dish Slot {idx + 1}
@@ -565,7 +565,7 @@ export const PackedMealsView: React.FC<PackedMealsViewProps> = ({ dishes = [] })
                                   'h-9 px-3 rounded-full text-xs font-bold font-manrope flex items-center gap-1.5 border transition-all duration-150 active:scale-95 select-none',
                                   slot.category === cat.id
                                     ? 'bg-primary border-primary text-background shadow-sm'
-                                    : 'bg-background border-secondary/15 text-text-charcoal hover:border-primary/25 hover:bg-surface/10'
+                                    : 'bg-white border-[#E8DDD6] text-text-charcoal hover:border-primary/25 hover:bg-[#F8F5F2]'
                                 )}
                               >
                                 <span>{cat.emoji}</span>
@@ -622,7 +622,7 @@ export const PackedMealsView: React.FC<PackedMealsViewProps> = ({ dishes = [] })
             
             {/* Custom Meal Summary & Add to Cart */}
             {bentoType && base && (
-              <div className="bg-background/80 p-6 rounded-2xl border border-secondary/10 shadow-sm select-none sticky bottom-4 z-20">
+              <div className="bg-white p-6 rounded-2xl border border-[#E8DDD6] shadow-sm select-none sticky bottom-4 z-20">
                 <div className="border-t border-secondary/10 pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
                   <div className="flex flex-col">
                     <span className="text-[12px] text-secondary/40 font-semibold uppercase">Final Meal Price</span>

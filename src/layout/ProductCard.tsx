@@ -31,9 +31,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   const imageUrl = getFoodImage(category, title);
 
   return (
-    <Card className={`flex flex-col h-full bg-surface/30 border border-secondary/10 hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-150 ${className}`} hoverEffect padding="md">
+    <Card className={`flex flex-col h-full bg-white border border-[#E8DDD6] hover:border-primary/20 hover:-translate-y-0.5 transition-all duration-150 ${className}`} hoverEffect padding="md">
       {/* Product Image - Contained inside card padding with fallback */}
-      <div className="w-full h-40 rounded-xl bg-surface/60 border border-secondary/5 flex items-center justify-center flex-shrink-0 mb-3.5 relative select-none overflow-hidden group">
+      <div className="w-full h-40 rounded-xl bg-[#F8F5F2] border border-secondary/5 flex items-center justify-center flex-shrink-0 mb-3.5 relative select-none overflow-hidden group">
         <img
           src={imageUrl}
           alt={title}
