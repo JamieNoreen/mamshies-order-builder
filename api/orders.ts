@@ -40,6 +40,8 @@ export default async function handler(request: VercelRequest, response: VercelRe
   // Retrieve GoHighLevel credentials from environment variables
   const accessToken = process.env.GHL_ACCESS_TOKEN;
   const locationId = process.env.GHL_LOCATION_ID;
+  const pipelineId = process.env.GHL_PIPELINE_ID;
+  const pipelineStageId = process.env.GHL_NEW_ORDER_STAGE_ID;
 
   if (!accessToken) {
     console.error('Missing GHL_ACCESS_TOKEN environment variable');
@@ -57,6 +59,22 @@ export default async function handler(request: VercelRequest, response: VercelRe
     });
   }
 
+  if (!pipelineId) {
+    console.error('Missing GHL_PIPELINE_ID environment variable');
+    return response.status(500).json({
+      success: false,
+      message: 'Server configuration error: GoHighLevel Pipeline ID is missing.'
+    });
+  }
+
+  if (!pipelineStageId) {
+    console.error('Missing GHL_NEW_ORDER_STAGE_ID environment variable');
+    return response.status(500).json({
+      success: false,
+      message: 'Server configuration error: GoHighLevel New Order Stage ID is missing.'
+    });
+  }
+
   // Extract contact fields from clientDetails
   const fullName = body.clientDetails?.fullName || '';
   const email = body.clientDetails?.email || '';
@@ -70,6 +88,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
   }
 
   try {
+    // 1. Perform Contact Upsert
     const nameParts = fullName.trim().split(/\s+/);
     const firstName = nameParts[0] || '';
     const lastName = nameParts.slice(1).join(' ') || '';
@@ -83,7 +102,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
       phone: phoneNumber,
     };
 
-    console.log('Sending payload to GoHighLevel Upsert:', JSON.stringify(ghlPayload, null, 2));
+    console.log('Sending payload to GoHighLevel Upsert Contact:', JSON.stringify(ghlPayload, null, 2));
 
     const ghlResponse = await fetch('https://services.leadconnectorhq.com/contacts/upsert', {
       method: 'POST',
@@ -98,12 +117,12 @@ export default async function handler(request: VercelRequest, response: VercelRe
 
     if (!ghlResponse.ok) {
       const errorText = await ghlResponse.text();
-      console.error('GoHighLevel API Error Status:', ghlResponse.status, 'Response:', errorText);
+      console.error('GoHighLevel Contact API Error Status:', ghlResponse.status, 'Response:', errorText);
       let errorMsg = 'Failed to upsert contact in GoHighLevel.';
       try {
         const errorJson = JSON.parse(errorText);
         if (errorJson.message) {
-          errorMsg = `GoHighLevel API error: ${errorJson.message}`;
+          errorMsg = `GoHighLevel Contact API error: ${errorJson.message}`;
         }
       } catch {
         // use fallback errorMsg
@@ -126,11 +145,67 @@ export default async function handler(request: VercelRequest, response: VercelRe
       });
     }
 
-    // Return success response with Contact ID
+    // 2. Create Opportunity associated with the Contact
+    const referenceCode = body.referenceCode || 'Unknown Ref';
+    const opportunityPayload = {
+      pipelineId,
+      pipelineStageId,
+      contactId,
+      name: `${referenceCode} - ${fullName}`,
+      monetaryValue: Number(body.subtotal) || 0,
+      status: 'open',
+      locationId
+    };
+
+    console.log('Sending payload to GoHighLevel Create Opportunity:', JSON.stringify(opportunityPayload, null, 2));
+
+    const optResponse = await fetch('https://services.leadconnectorhq.com/opportunities/', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Version': '2021-07-28'
+      },
+      body: JSON.stringify(opportunityPayload)
+    });
+
+    if (!optResponse.ok) {
+      const errorText = await optResponse.text();
+      console.error('GoHighLevel Opportunity API Error Status:', optResponse.status, 'Response:', errorText);
+      let errorMsg = 'Failed to create opportunity in GoHighLevel.';
+      try {
+        const errorJson = JSON.parse(errorText);
+        if (errorJson.message) {
+          errorMsg = `GoHighLevel Opportunity API error: ${errorJson.message}`;
+        }
+      } catch {
+        // use fallback errorMsg
+      }
+      return response.status(optResponse.status).json({
+        success: false,
+        message: errorMsg
+      });
+    }
+
+    const optData = await optResponse.json();
+    console.log('GoHighLevel API Create Opportunity Success:', JSON.stringify(optData, null, 2));
+
+    const opportunityId = optData.opportunity?.id;
+
+    if (!opportunityId) {
+      return response.status(500).json({
+        success: false,
+        message: 'GoHighLevel did not return a valid Opportunity ID.'
+      });
+    }
+
+    // Return success response with Contact ID and Opportunity ID
     return response.status(200).json({
       success: true,
-      message: 'Order received.',
+      message: 'Order and Opportunity successfully registered.',
       contactId: contactId,
+      opportunityId: opportunityId,
       received: body
     });
 
