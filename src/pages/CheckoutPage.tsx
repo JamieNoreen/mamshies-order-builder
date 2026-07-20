@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/useCartStore';
 import { PrimaryButton } from '../components/shared/PrimaryButton';
-import { 
+import {
   Sparkles, Upload, Trash2, Check, ArrowLeft, ArrowRight, CreditCard, Loader2
 } from 'lucide-react';
 import { cn } from '../utils/cn';
@@ -174,6 +174,8 @@ export const CheckoutPage: React.FC = () => {
 
   // Booking Reference state
   const [bookingRef, setBookingRef] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const handleDetailsChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -277,7 +279,7 @@ export const CheckoutPage: React.FC = () => {
     today.setHours(0, 0, 0, 0);
 
     if (!details.fullName.trim()) errors.fullName = 'Full name is required';
-    
+
     // Validate phone
     const phonePattern = /^(09|\+639)\d{9}$/;
     const normalizedPhone = details.phoneNumber.replace(/\s+/g, '');
@@ -373,11 +375,14 @@ export const CheckoutPage: React.FC = () => {
     setStep(3);
   };
 
-  const handleConfirmOrder = () => {
+  const handleConfirmOrder = async () => {
+    setIsSubmitting(true);
+    setSubmitError('');
+
     const rand = Math.floor(1000 + Math.random() * 9000);
     const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
     const refCode = `MMS-${dateStr}-${rand}`;
-    
+
     // Log compiled GHL integration payload
     const orderData = {
       referenceCode: refCode,
@@ -391,8 +396,34 @@ export const CheckoutPage: React.FC = () => {
     };
     console.log('Fulfillment Order Data (Ready for GoHighLevel):', orderData);
 
-    setBookingRef(refCode);
-    setStep(4);
+    try {
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `Server returned status code ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      if (!responseData.success) {
+        throw new Error(responseData.message || 'API returned an unsuccessful status.');
+      }
+
+      // Success: continue with existing flow
+      setBookingRef(refCode);
+      setStep(4);
+    } catch (err: any) {
+      console.error('Checkout submission error:', err);
+      setSubmitError(err.message || 'An error occurred while submitting your order. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Calculations
@@ -429,19 +460,19 @@ export const CheckoutPage: React.FC = () => {
     <div className="min-h-screen bg-[#FDFBF7] text-text-charcoal pb-20 select-none">
       {/* Checkout Navbar */}
       <header className="border-b border-secondary/10 bg-white/70 backdrop-blur-md sticky top-0 z-30 select-none">
-        <div 
+        <div
           className="mx-auto px-8 h-16 flex items-center justify-between w-full"
           style={{ maxWidth: '960px' }}
         >
           <button
             onClick={() => step === 4 ? handleConfirmOrder() : navigate('/')}
-            className="flex items-center gap-2 font-manrope font-bold text-sm text-primary hover:text-primary/80 transition-colors active:scale-95 cursor-pointer"
-            disabled={step === 4}
+            className="flex items-center gap-2 font-manrope font-bold text-sm text-primary hover:text-primary/80 transition-colors active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={step === 4 || isSubmitting}
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Return to Menu</span>
           </button>
-          
+
           {/* Compact Brand Section */}
           <div className="flex items-center gap-3 select-none">
             <img
@@ -457,18 +488,18 @@ export const CheckoutPage: React.FC = () => {
       </header>
 
       {/* Form container: 30-40% screen width on desktop/tablet (500px), 100% on mobile */}
-      <div 
+      <div
         className="mx-auto w-full px-8 py-10"
         style={{ maxWidth: '500px' }}
       >
-        
+
         {/* Wizard Progress Bar */}
         {step < 4 && (
           <div className="mb-10 w-full select-none">
             <div className="flex items-center justify-between relative px-2">
               {/* Connector Lines */}
               <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-secondary/10 z-0 mx-2" />
-              <div 
+              <div
                 className="absolute left-0 top-1/2 -translate-y-1/2 h-0.5 bg-primary transition-all duration-300 z-0 mx-2"
                 style={{ width: step === 1 ? '0%' : step === 2 ? '50%' : '100%' }}
               />
@@ -477,8 +508,8 @@ export const CheckoutPage: React.FC = () => {
               <div className="z-10 flex flex-col items-center gap-1.5">
                 <div className={cn(
                   "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold font-manrope transition-all duration-300 border",
-                  step >= 1 
-                    ? "bg-primary border-primary text-white shadow-md shadow-primary/20" 
+                  step >= 1
+                    ? "bg-primary border-primary text-white shadow-md shadow-primary/20"
                     : "bg-white border-secondary/20 text-secondary/40"
                 )}>
                   {step > 1 ? <Check className="w-4 h-4" /> : '1'}
@@ -496,7 +527,7 @@ export const CheckoutPage: React.FC = () => {
                 <div className={cn(
                   "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold font-manrope transition-all duration-300 border",
                   step >= 2
-                    ? "bg-primary border-primary text-white shadow-md shadow-primary/20" 
+                    ? "bg-primary border-primary text-white shadow-md shadow-primary/20"
                     : "bg-white border-secondary/20 text-secondary/40"
                 )}>
                   {step > 2 ? <Check className="w-4 h-4" /> : '2'}
@@ -514,7 +545,7 @@ export const CheckoutPage: React.FC = () => {
                 <div className={cn(
                   "w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold font-manrope transition-all duration-300 border",
                   step >= 3
-                    ? "bg-primary border-primary text-white shadow-md shadow-primary/20" 
+                    ? "bg-primary border-primary text-white shadow-md shadow-primary/20"
                     : "bg-white border-secondary/20 text-secondary/40"
                 )}>
                   3
@@ -532,18 +563,18 @@ export const CheckoutPage: React.FC = () => {
 
         {/* Wizard Form Panels */}
         <div className="w-full">
-          
+
           {/* STEP 1: RESERVATION DETAILS */}
           {step === 1 && (
             <form onSubmit={handleStep1Submit} className="bg-white p-6 md:p-8 rounded-2xl border border-secondary/15 shadow-sm flex flex-col gap-6 w-full animate-in fade-in duration-200">
-              
+
               <div className="pb-2 border-b border-secondary/5">
                 <h3 className="font-fraunces font-bold text-xl text-text-charcoal">Order Request Form</h3>
               </div>
 
               {/* Single Column Vertical Stack */}
               <div className="flex flex-col gap-5 w-full">
-                
+
                 {/* Full Name */}
                 <div className="flex flex-col gap-1.5 w-full">
                   <label className="block text-sm font-semibold text-[#2D3748]">Full Name</label>
@@ -647,8 +678,8 @@ export const CheckoutPage: React.FC = () => {
                   <div className="grid grid-cols-2 gap-4 w-full">
                     <label className={cn(
                       "h-11 rounded-lg border flex items-center justify-center gap-2 cursor-pointer font-manrope text-sm font-bold transition-all",
-                      details.deliveryOption === 'delivery' 
-                        ? "bg-primary/5 border-primary text-primary" 
+                      details.deliveryOption === 'delivery'
+                        ? "bg-primary/5 border-primary text-primary"
                         : "border-[#E2E8F0] bg-white text-secondary/65 hover:border-primary/20"
                     )}>
                       <input
@@ -664,8 +695,8 @@ export const CheckoutPage: React.FC = () => {
 
                     <label className={cn(
                       "h-11 rounded-lg border flex items-center justify-center gap-2 cursor-pointer font-manrope text-sm font-bold transition-all",
-                      details.deliveryOption === 'pickup' 
-                        ? "bg-primary/5 border-primary text-primary" 
+                      details.deliveryOption === 'pickup'
+                        ? "bg-primary/5 border-primary text-primary"
                         : "border-[#E2E8F0] bg-white text-secondary/65 hover:border-primary/20"
                     )}>
                       <input
@@ -673,13 +704,13 @@ export const CheckoutPage: React.FC = () => {
                         name="deliveryOption"
                         value="pickup"
                         checked={details.deliveryOption === 'pickup'}
-                        onChange={() => setDetails(prev => ({ 
-                          ...prev, 
-                          deliveryOption: 'pickup', 
-                          addressSearch: '', 
-                          streetAddress: '', 
-                          city: '', 
-                          province: '', 
+                        onChange={() => setDetails(prev => ({
+                          ...prev,
+                          deliveryOption: 'pickup',
+                          addressSearch: '',
+                          streetAddress: '',
+                          city: '',
+                          province: '',
                           postalCode: '',
                           latitude: undefined,
                           longitude: undefined,
@@ -695,7 +726,7 @@ export const CheckoutPage: React.FC = () => {
                 {/* Address Section (Visible if delivery is chosen) */}
                 {details.deliveryOption === 'delivery' && (
                   <div className="flex flex-col gap-5 p-5 bg-secondary/[0.02] border border-[#E2E8F0] rounded-xl animate-in fade-in duration-200 w-full relative">
-                    
+
                     {/* Geolocation Button */}
                     <div className="w-full">
                       <button
@@ -722,7 +753,7 @@ export const CheckoutPage: React.FC = () => {
                         </span>
                       )}
                     </div>
-                    
+
                     {/* Street Address */}
                     <div className="flex flex-col gap-1.5 w-full">
                       <label className="block text-sm font-semibold text-[#2D3748]">Street Address</label>
@@ -797,9 +828,9 @@ export const CheckoutPage: React.FC = () => {
                         <span className="text-[10.5px] font-bold text-secondary/50 uppercase tracking-wider block mb-1">
                           📍 Pin marker location (Draggable)
                         </span>
-                        <div 
-                          ref={mapRef} 
-                          className="w-full h-60 rounded-xl border border-secondary/15 shadow-sm overflow-hidden" 
+                        <div
+                          ref={mapRef}
+                          className="w-full h-60 rounded-xl border border-secondary/15 shadow-sm overflow-hidden"
                         />
                       </div>
                     )}
@@ -899,7 +930,7 @@ export const CheckoutPage: React.FC = () => {
               {/* Upload Proof of Payment */}
               <div className="flex flex-col gap-1.5">
                 <label className="block text-sm font-semibold text-[#2D3748]">Upload Proof of Payment</label>
-                
+
                 {payment.proofPreviewUrl ? (
                   /* Uploaded preview */
                   <div className="relative border border-[#E2E8F0] rounded-xl p-4 bg-background flex items-center justify-between gap-4 animate-in fade-in duration-200 w-full">
@@ -918,7 +949,7 @@ export const CheckoutPage: React.FC = () => {
                         </span>
                       </div>
                     </div>
-                    
+
                     <button
                       type="button"
                       onClick={handleRemoveFile}
@@ -985,11 +1016,11 @@ export const CheckoutPage: React.FC = () => {
               </div>
 
               <div className="flex flex-col gap-5 select-none w-full">
-                
+
                 {/* 1. Reservation Details Summary */}
                 <div className="border border-secondary/10 rounded-xl p-5 bg-[#FAF7F2]/45 flex flex-col gap-3.5 text-xs font-manrope w-full">
                   <h4 className="font-fraunces font-bold text-sm text-primary uppercase tracking-wide">Reservation Details</h4>
-                  
+
                   <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-0.5">
                       <span className="text-[10px] text-secondary/40 font-bold uppercase tracking-wider">Client Name</span>
@@ -1020,8 +1051,8 @@ export const CheckoutPage: React.FC = () => {
                     <div className="flex flex-col gap-0.5">
                       <span className="text-[10px] text-secondary/40 font-bold uppercase tracking-wider">Fulfillment Method</span>
                       <span className="font-bold text-text-charcoal capitalize">
-                        {details.deliveryOption === 'delivery' 
-                          ? `Delivery (Address: ${details.streetAddress}, ${details.city}, ${details.province}, ${details.postalCode})` 
+                        {details.deliveryOption === 'delivery'
+                          ? `Delivery (Address: ${details.streetAddress}, ${details.city}, ${details.province}, ${details.postalCode})`
                           : 'Store Pickup'}
                       </span>
                     </div>
@@ -1091,20 +1122,37 @@ export const CheckoutPage: React.FC = () => {
 
               {/* Step 3 Actions */}
               <div className="pt-4 border-t border-secondary/5 mt-2 flex flex-col gap-3">
+                {submitError && (
+                  <div className="text-red-500 text-xs font-bold text-center bg-red-50 border border-red-200 rounded-lg p-3">
+                    {submitError}
+                  </div>
+                )}
+
                 <PrimaryButton
                   type="button"
                   variant="primary"
                   onClick={handleConfirmOrder}
-                  className="w-full h-11 text-sm font-bold flex items-center justify-center gap-1.5 rounded-lg shadow-md hover:shadow-lg active:scale-98 transition-all bg-green-700 hover:bg-green-800"
+                  disabled={isSubmitting}
+                  className="w-full h-11 text-sm font-bold flex items-center justify-center gap-1.5 rounded-lg shadow-md hover:shadow-lg active:scale-98 transition-all bg-green-700 hover:bg-green-800 disabled:opacity-75 disabled:cursor-not-allowed"
                 >
-                  <Check className="w-4 h-4 stroke-[3]" />
-                  <span>Place Order</span>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-4 h-4 stroke-[3]" />
+                      <span>Place Order</span>
+                    </>
+                  )}
                 </PrimaryButton>
 
                 <button
                   type="button"
+                  disabled={isSubmitting}
                   onClick={() => setStep(2)}
-                  className="h-11 w-full rounded-lg font-manrope text-sm font-bold border border-[#E2E8F0] text-text-charcoal hover:bg-surface transition-all active:scale-98 flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="h-11 w-full rounded-lg font-manrope text-sm font-bold border border-[#E2E8F0] text-text-charcoal hover:bg-surface transition-all active:scale-98 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   <span>Back to Payment</span>
@@ -1116,13 +1164,13 @@ export const CheckoutPage: React.FC = () => {
           {/* STEP 4: SUBMIT SUCCESS PAGE */}
           {step === 4 && (
             <div className="bg-white p-6 md:p-8 rounded-2xl border border-[#E2E8F0] shadow-md flex flex-col items-center text-center gap-6 select-none animate-in zoom-in-95 duration-200 w-full">
-              
+
               <div className="bg-green-100 text-green-600 p-4.5 rounded-full animate-bounce mt-4">
                 <Check className="w-12 h-12 stroke-[3]" />
               </div>
 
               <div className="flex flex-col gap-1.5 max-w-md">
-                <h3 className="font-fraunces font-bold text-2xl text-text-charcoal leading-none">Booking Submitted Successfully!</h3>
+                <h3 className="font-fraunces font-bold text-2xl text-text-charcoal leading-none">Order Submitted Successfully!</h3>
                 <p className="font-manrope text-xs text-secondary/65 leading-relaxed mt-1">
                   Thank you for choosing Mamshies! We have received your payment reference. Our team will verify your reservation and contact you shortly.
                 </p>
