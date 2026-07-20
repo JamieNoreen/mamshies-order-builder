@@ -73,10 +73,16 @@ export const PartyBoxBuilder: React.FC<PartyBoxBuilderProps> = ({ dishes, classN
     setIsEditing(updated);
   };
 
-  // Calculations using Small tray S prices
+  // Calculations using Small tray S prices (applying Party Box Builder pricing discounts)
   const selectedParsedDishes = slots.map((slot) => {
     const found = standardDishes.find((d) => d.id === slot.dishId);
-    return found ? parsePriceAndLabel(found.prices['S'] || '') : null;
+    if (!found) return null;
+    const parsed = parsePriceAndLabel(found.prices['S'] || '');
+    const reduction = found.title.toUpperCase() === 'PORK SHANGHAI' ? 200 : 250;
+    return {
+      ...parsed,
+      price: Math.max(0, parsed.price - reduction),
+    };
   });
 
   const unitPrice = selectedParsedDishes.reduce((sum, parsed) => sum + (parsed?.price || 0), 0);
@@ -315,6 +321,8 @@ export const PartyBoxBuilder: React.FC<PartyBoxBuilderProps> = ({ dishes, classN
                         )}>
                           {filteredOptions.map((dish) => {
                             const parsed = parsePriceAndLabel(dish.prices['S'] || '');
+                            const reduction = dish.title.toUpperCase() === 'PORK SHANGHAI' ? 200 : 250;
+                            const adjustedPrice = Math.max(0, parsed.price - reduction);
                             return (
                               <button
                                 key={dish.id}
@@ -329,7 +337,7 @@ export const PartyBoxBuilder: React.FC<PartyBoxBuilderProps> = ({ dishes, classN
                                   {dish.title}
                                 </span>
                                 <span className="text-xs font-extrabold text-primary shrink-0 select-none">
-                                  ₱{parsed.price.toLocaleString()}
+                                  ₱{adjustedPrice.toLocaleString()}
                                 </span>
                               </button>
                             );
