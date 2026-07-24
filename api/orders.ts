@@ -88,13 +88,63 @@ export default async function handler(request: VercelRequest, response: VercelRe
   }
 
   try {
-    // 1. Perform Contact Upsert
+    // 1. Check if the contact already exists to avoid duplicates
+    let contactId = '';
+
+    // Search by email first
+    if (email) {
+      console.log(`Searching for existing contact by email: ${email}`);
+      const searchUrl = `https://services.leadconnectorhq.com/contacts/?locationId=${locationId}&query=${encodeURIComponent(email)}`;
+      const searchResponse = await fetch(searchUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Accept': 'application/json',
+          'Version': '2021-07-28'
+        }
+      });
+      if (searchResponse.ok) {
+        const searchData = await searchResponse.json();
+        const matchedContact = searchData.contacts?.find(
+          (c: any) => c.email && c.email.toLowerCase() === email.toLowerCase()
+        );
+        if (matchedContact) {
+          contactId = matchedContact.id;
+          console.log(`Found existing contact by email: ${contactId}`);
+        }
+      }
+    }
+
+    // Search by phone if not found by email
+    if (!contactId && phoneNumber) {
+      console.log(`Searching for existing contact by phone: ${phoneNumber}`);
+      const searchUrl = `https://services.leadconnectorhq.com/contacts/?locationId=${locationId}&query=${encodeURIComponent(phoneNumber)}`;
+      const searchResponse = await fetch(searchUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Accept': 'application/json',
+          'Version': '2021-07-28'
+        }
+      });
+      if (searchResponse.ok) {
+        const searchData = await searchResponse.json();
+        const cleanPhone = phoneNumber.replace(/\D/g, '');
+        const matchedContact = searchData.contacts?.find(
+          (c: any) => c.phone && c.phone.replace(/\D/g, '') === cleanPhone
+        );
+        if (matchedContact) {
+          contactId = matchedContact.id;
+          console.log(`Found existing contact by phone: ${contactId}`);
+        }
+      }
+    }
+
     const nameParts = fullName.trim().split(/\s+/);
     const firstName = nameParts[0] || '';
     const lastName = nameParts.slice(1).join(' ') || '';
 
-    const ghlPayload = {
-      locationId,
+    const contactPayload = {
       name: fullName,
       firstName,
       lastName,
@@ -102,41 +152,67 @@ export default async function handler(request: VercelRequest, response: VercelRe
       phone: phoneNumber,
     };
 
-    console.log('Sending payload to GoHighLevel Upsert Contact:', JSON.stringify(ghlPayload, null, 2));
-
-    const ghlResponse = await fetch('https://services.leadconnectorhq.com/contacts/upsert', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Version': '2021-07-28'
-      },
-      body: JSON.stringify(ghlPayload)
-    });
-
-    if (!ghlResponse.ok) {
-      const errorText = await ghlResponse.text();
-      console.error('GoHighLevel Contact API Error Status:', ghlResponse.status, 'Response:', errorText);
-      let errorMsg = 'Failed to upsert contact in GoHighLevel.';
-      try {
-        const errorJson = JSON.parse(errorText);
-        if (errorJson.message) {
-          errorMsg = `GoHighLevel Contact API error: ${errorJson.message}`;
-        }
-      } catch {
-        // use fallback errorMsg
-      }
-      return response.status(ghlResponse.status).json({
-        success: false,
-        message: errorMsg
+    if (contactId) {
+      // Contact exists: Update existing contact via PUT
+      console.log(`Updating existing contact (${contactId}):`, JSON.stringify(contactPayload, null, 2));
+      const updateContactResponse = await fetch(`https://services.leadconnectorhq.com/contacts/${contactId}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Version': '2021-07-28'
+        },
+        body: JSON.stringify(contactPayload)
       });
+
+      if (!updateContactResponse.ok) {
+        const errorText = await updateContactResponse.text();
+        console.warn(`Failed to update existing contact ${contactId}:`, errorText);
+      } else {
+        const contactData = await updateContactResponse.json();
+        console.log(`Successfully updated contact:`, JSON.stringify(contactData, null, 2));
+      }
+    } else {
+      // Contact does not exist: Create new contact via POST
+      const createPayload = {
+        locationId,
+        ...contactPayload
+      };
+      console.log('Creating new contact:', JSON.stringify(createPayload, null, 2));
+      const ghlResponse = await fetch('https://services.leadconnectorhq.com/contacts/', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Version': '2021-07-28'
+        },
+        body: JSON.stringify(createPayload)
+      });
+
+      if (!ghlResponse.ok) {
+        const errorText = await ghlResponse.text();
+        console.error('GoHighLevel Contact API Error Status:', ghlResponse.status, 'Response:', errorText);
+        let errorMsg = 'Failed to create contact in GoHighLevel.';
+        try {
+          const errorJson = JSON.parse(errorText);
+          if (errorJson.message) {
+            errorMsg = `GoHighLevel Contact API error: ${errorJson.message}`;
+          }
+        } catch {
+          // use fallback errorMsg
+        }
+        return response.status(ghlResponse.status).json({
+          success: false,
+          message: errorMsg
+        });
+      }
+
+      const ghlData = await ghlResponse.json();
+      console.log('GoHighLevel API Create Success:', JSON.stringify(ghlData, null, 2));
+      contactId = ghlData.contact?.id;
     }
-
-    const ghlData = await ghlResponse.json();
-    console.log('GoHighLevel API Upsert Success:', JSON.stringify(ghlData, null, 2));
-
-    const contactId = ghlData.contact?.id;
 
     if (!contactId) {
       return response.status(500).json({
@@ -274,20 +350,15 @@ export default async function handler(request: VercelRequest, response: VercelRe
       })
     });
 
+    const updateText = await updateResponse.text();
+    console.log("Update Status:", updateResponse.status);
+    console.log("Update Response:", updateText);
+
     if (!updateResponse.ok) {
-      const errorText = await updateResponse.text();
-      const updateText = await updateResponse.text();
-
-      console.log("Update Status:", updateResponse.status);
-      console.log("Update Response:", updateText);
-
-      if (!updateResponse.ok) {
-        throw new Error(updateText);
-      }
-      console.error('GoHighLevel Update Opportunity API Error Status:', updateResponse.status, 'Response:', errorText);
+      console.error('GoHighLevel Update Opportunity API Error Status:', updateResponse.status, 'Response:', updateText);
       let errorMsg = 'Failed to update opportunity custom fields in GoHighLevel.';
       try {
-        const errorJson = JSON.parse(errorText);
+        const errorJson = JSON.parse(updateText);
         if (errorJson.message) {
           errorMsg = `GoHighLevel Update Opportunity API error: ${errorJson.message}`;
         }
@@ -300,8 +371,13 @@ export default async function handler(request: VercelRequest, response: VercelRe
       });
     }
 
-    const updateData = await updateResponse.json();
-    console.log('GoHighLevel API Update Opportunity Success:', JSON.stringify(updateData, null, 2));
+    let updateData = {};
+    try {
+      updateData = JSON.parse(updateText);
+      console.log('GoHighLevel API Update Opportunity Success:', JSON.stringify(updateData, null, 2));
+    } catch (e) {
+      console.warn("Failed to parse Update Opportunity response as JSON:", e);
+    }
 
     // Return success response with Contact ID and Opportunity ID
     return response.status(200).json({
