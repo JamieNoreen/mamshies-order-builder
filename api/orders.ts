@@ -209,8 +209,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
       name: `${referenceCode} - ${fullName}`,
       monetaryValue: Number(body.subtotal) || 0,
       status: 'open',
-      locationId,
-      customFields
+      locationId
     };
 
     console.log('Sending payload to GoHighLevel Create Opportunity:', JSON.stringify(opportunityPayload, null, 2));
@@ -255,6 +254,54 @@ export default async function handler(request: VercelRequest, response: VercelRe
         message: 'GoHighLevel did not return a valid Opportunity ID.'
       });
     }
+
+    // 3. Immediately update the Opportunity to populate custom fields
+    console.log(`Sending payload to GoHighLevel Update Opportunity (${opportunityId}) Custom Fields:`, JSON.stringify({ customFields }, null, 2));
+
+    const updateResponse = await fetch(`https://services.leadconnectorhq.com/opportunities/${opportunityId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Version': '2021-07-28'
+      },
+      body: JSON.stringify({
+        pipelineId,
+        pipelineStageId,
+        locationId,
+        customFields
+      })
+    });
+
+    if (!updateResponse.ok) {
+      const errorText = await updateResponse.text();
+      const updateText = await updateResponse.text();
+
+      console.log("Update Status:", updateResponse.status);
+      console.log("Update Response:", updateText);
+
+      if (!updateResponse.ok) {
+        throw new Error(updateText);
+      }
+      console.error('GoHighLevel Update Opportunity API Error Status:', updateResponse.status, 'Response:', errorText);
+      let errorMsg = 'Failed to update opportunity custom fields in GoHighLevel.';
+      try {
+        const errorJson = JSON.parse(errorText);
+        if (errorJson.message) {
+          errorMsg = `GoHighLevel Update Opportunity API error: ${errorJson.message}`;
+        }
+      } catch {
+        // use fallback errorMsg
+      }
+      return response.status(updateResponse.status).json({
+        success: false,
+        message: errorMsg
+      });
+    }
+
+    const updateData = await updateResponse.json();
+    console.log('GoHighLevel API Update Opportunity Success:', JSON.stringify(updateData, null, 2));
 
     // Return success response with Contact ID and Opportunity ID
     return response.status(200).json({
