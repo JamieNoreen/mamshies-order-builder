@@ -147,6 +147,61 @@ export default async function handler(request: VercelRequest, response: VercelRe
 
     // 2. Create Opportunity associated with the Contact
     const referenceCode = body.referenceCode || 'Unknown Ref';
+
+    // Format items into a clear, readable text summary
+    const items = body.items || [];
+    const orderSummary = items
+      .map((item: any) => {
+        const productTitle = item.product?.title || 'Unknown Product';
+        const sizeStr = item.selectedSize ? ` (${item.selectedSize})` : '';
+        const qtyStr = `x${item.quantity || 1}`;
+        const priceStr = item.price ? ` - ₱${(item.price * (item.quantity || 1)).toLocaleString()}` : '';
+        let partyBoxDishesInfo = '';
+        if (item.partyBoxDishes && Array.isArray(item.partyBoxDishes) && item.partyBoxDishes.length > 0) {
+          partyBoxDishesInfo = `\n  - Dishes: ${item.partyBoxDishes.join(', ')}`;
+        }
+        return `- ${productTitle}${sizeStr} ${qtyStr}${priceStr}${partyBoxDishesInfo}`;
+      })
+      .join('\n');
+
+    // TODO: opportunity.payment_method is not currently defined in the checkout payload schema.
+    // TODO: opportunity.payment_status is not currently defined in the checkout payload schema.
+
+    const customFields = [
+      {
+        key: 'opportunity.order_reference',
+        field_value: referenceCode
+      },
+      {
+        key: 'opportunity.event_date',
+        field_value: body.clientDetails?.eventDate || ''
+      },
+      {
+        key: 'opportunity.event_time',
+        field_value: body.clientDetails?.deliveryTime || ''
+      },
+      {
+        key: 'opportunity.fulfillment_type',
+        field_value: body.clientDetails?.deliveryOption || ''
+      },
+      {
+        key: 'opportunity.delivery_address',
+        field_value: body.clientDetails?.addressSearch || ''
+      },
+      {
+        key: 'opportunity.order_total',
+        field_value: Number(body.subtotal) || 0
+      },
+      {
+        key: 'opportunity.order_summary',
+        field_value: orderSummary
+      },
+      {
+        key: 'opportunity.special_instructions',
+        field_value: body.clientDetails?.additionalRequests || ''
+      }
+    ];
+
     const opportunityPayload = {
       pipelineId,
       pipelineStageId,
@@ -154,7 +209,8 @@ export default async function handler(request: VercelRequest, response: VercelRe
       name: `${referenceCode} - ${fullName}`,
       monetaryValue: Number(body.subtotal) || 0,
       status: 'open',
-      locationId
+      locationId,
+      customFields
     };
 
     console.log('Sending payload to GoHighLevel Create Opportunity:', JSON.stringify(opportunityPayload, null, 2));
