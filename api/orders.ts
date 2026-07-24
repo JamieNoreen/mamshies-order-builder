@@ -245,35 +245,35 @@ export default async function handler(request: VercelRequest, response: VercelRe
 
     const customFields = [
       {
-        key: 'opportunity.order_reference',
+        id: 'B3AtBos0EkjKyJzzftGW',
         field_value: referenceCode
       },
       {
-        key: 'opportunity.event_date',
+        id: 'UoMTxoXmCMYwXTLusei9',
         field_value: body.clientDetails?.eventDate || ''
       },
       {
-        key: 'opportunity.event_time',
+        id: 'xYfXyrLJtXEKA7XOONVR',
         field_value: body.clientDetails?.deliveryTime || ''
       },
       {
-        key: 'opportunity.fulfillment_type',
+        id: 'uH394KgaeLYFHHx3tmcY',
         field_value: body.clientDetails?.deliveryOption || ''
       },
       {
-        key: 'opportunity.delivery_address',
+        id: 'ACpAoJV1zJRpnoLsHDFR',
         field_value: body.clientDetails?.addressSearch || ''
       },
       {
-        key: 'opportunity.order_total',
+        id: '55qMnEsry8d6y835drbP',
         field_value: Number(body.subtotal) || 0
       },
       {
-        key: 'opportunity.order_summary',
+        id: 'ajLI5y5x9KVqyelUBX8D',
         field_value: orderSummary
       },
       {
-        key: 'opportunity.special_instructions',
+        id: 'o1bgrFJ4aXSUvPcMsevz',
         field_value: body.clientDetails?.additionalRequests || ''
       }
     ];
